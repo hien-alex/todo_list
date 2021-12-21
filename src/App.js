@@ -1,12 +1,24 @@
 import "./App.css";
 import Form from "./components/form";
 import TodoList from "./components/todoList";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function App() {
   const [inputText, setInputText] = useState("");
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(
+    localStorage.getItem("todos") !== null
+      ? JSON.parse(localStorage.getItem("todos"))
+      : []
+  );
   const [filter, setFilter] = useState("all");
+
+  useEffect(() => {
+    saveLocalTodos();
+  }, [todos]);
+
+  const saveLocalTodos = () => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  };
 
   return (
     <div className="App">
@@ -21,7 +33,7 @@ function App() {
         filter={filter}
         setFilter={setFilter}
       />
-      <TodoList setTodos={setTodos} todos={todos} />
+      <TodoList filter={filter} setTodos={setTodos} todos={todos} />
     </div>
   );
 }
